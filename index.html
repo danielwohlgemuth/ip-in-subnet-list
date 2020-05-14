@@ -22,12 +22,12 @@
     <hr style='margin-bottom: 20px;'>
 
     <div style='margin-bottom: 20px;'>
-      <span style='font-weight:700;'>Legend: </span>
+      <span style='font-weight:700;'>Legend</span>
       <div id='icon-legend'></div>
     </div>
 
     <div style='margin-bottom: 20px;'>
-      <span style='font-weight:700;'>IP address:</span>
+      <span style='font-weight:700;'>IPv4 address</span>
       <div id='output-ip'></div>
     </div>
 
@@ -150,6 +150,8 @@
       subnetListInput.addEventListener('input', findSubnet)
 
       iconLegend.innerHTML = getIconLegend()
+
+      findSubnet()
     }
 
     window.onload = setup
