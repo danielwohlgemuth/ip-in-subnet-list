@@ -5,33 +5,37 @@
   <meta charset='UTF-8'>
 </head>
 
-<body>
-  <div>
-    <label for='ip'>IP address</label>
-    <input id='ip' placeholder='1.2.3.1' />
-  </div>
+<body style="font-size: 18px;">
+  <main style="max-width: 400px; margin: 0 auto">
+    <div style="margin-bottom: 20px;">
+      <label style="display: block" for='ip'>IPv4 address</label>
+      <input style="width:100%;display:block;max-width: 382px; font-size: inherit;" id='ip' placeholder='1.2.3.1' />
+    </div>
 
-  <div>
-    <label for='subnet-list'>Subnet list with mask</label>
-    <textarea id='subnet-list' placeholder='1.2.3.4/24&#10;5.6.7.8/24'></textarea>
-  </div>
+    <div style="margin-bottom: 20px;">
+      <label style="display: block"  for='subnet-list'>Subnet list with mask</label>
+      <textarea style="width:100%;display:block;max-width: 382px; min-width: 382px; min-height: 120px; padding: 8px; font-size: inherit;" id='subnet-list' placeholder='1.2.3.4/24&#10;5.6.7.8/24'></textarea>
+    </div>
 
+    <hr>
 
+    <div style="margin-bottom: 20px;" id='output-ip'></div>
 
-  <div id='output-ip'></div>
+    <div style="margin-bottom: 20px;">
+      Legend: 
+      <div id='icon-legend'></div>
+    </div>
 
-  <div id='label-description'></div>
-
-  <table>
-    <thead>
-      <tr>
-        <td>Subnet</td>
-        <td>Valid subnet</td>
-        <td>IP in subnet</td>
-      </tr>
-    </thead>
-    <tbody id='output-list'></tbody>
-  </table>
+    <table style="border-collapse: collapse; width: 100%;">
+      <thead>
+        <tr>
+          <td style="border-bottom: 1px solid black;width:85%">Subnet</td>
+          <td style="border-bottom: 1px solid black;width:15%; text-align: center;">Result</td>
+        </tr>
+      </thead>
+      <tbody id='output-list'></tbody>
+    </table>
+  </main>
 
   <!-- <div id='output-list'></div> -->
 
@@ -88,16 +92,16 @@
 
     function getIcon(isValid, containsIp) {
       if (!isValid) {
-        return `<svg style='width:24px;height:24px' viewBox='0 0 24 24'><path fill='orange' d='M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z' /></svg>`
+        return `<svg style='width:24px;height:24px;position:absolute;bottom:0' viewBox='0 0 24 24'><path fill='orange' d='M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z' /></svg>`
       } else if (!containsIp) {
-        return `<svg style='width:24px;height:24px' viewBox='0 0 24 24'><path fill='red' d='M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z' /></svg>`
+        return `<svg style='width:24px;height:24px;position:absolute;bottom:0' viewBox='0 0 24 24'><path fill='red' d='M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z' /></svg>`
       } else {
-        return `<svg style='width:24px;height:24px' viewBox='0 0 24 24'><path fill='green' d='M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z' /></svg>`
+        return `<svg style='width:24px;height:24px;position:absolute;bottom:0' viewBox='0 0 24 24'><path fill='green' d='M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z' /></svg>`
       }      
     }
 
     function generateProcessedSubnetList(subnetList) {
-      let subnetListItems = subnetList.map(subnet => `<tr><td>${subnet.subnet}</td><td>${getIcon(subnet.isValid, subnet.containsIp)}</td></tr>`)
+      let subnetListItems = subnetList.map(subnet => `<tr><td style="border-bottom: 1px solid gray;">${subnet.subnet}</td><td style="border-bottom: 1px solid gray; text-align: center"><div style='position: relative'><span style='margin-right: 30px'>${getIcon(subnet.isValid, subnet.containsIp)}</div></span></td></tr>`)
       return subnetListItems.join('')
     }
 
@@ -118,18 +122,23 @@
       outputListElem.innerHTML = generateProcessedSubnetList(processedSubnetList)
     }
 
-    function getLabelDescription() {
-      return `${getIcon(false, false)} ${getIcon(true, false)} ${getIcon(true, true)}`
+    function getIconLegend() {
+      legends = [
+        `<div style='position: relative;'><span style='margin-right: 30px'>${getIcon(false, false)}</span> Invalid format</div>`,
+        `<div style='position: relative;'><span style='margin-right: 30px'>${getIcon(true, false)}</span> IP not in subnet</div>`,
+        `<div style='position: relative;'><span style='margin-right: 30px'>${getIcon(true, true)}</span> IP in subnet</div>`
+      ]
+      return `<div>${legends.join('')}</div>`
     }
 
     function setup() {
       let ipInput = document.getElementById('ip')
       let subnetListInput = document.getElementById('subnet-list')
-      let labelDescription = document.getElementById('label-description')
+      let iconLegend = document.getElementById('icon-legend')
 
       ipInput.addEventListener('change', findSubnet)
       subnetListInput.addEventListener('change', findSubnet)
-      labelDescription.innerHTML = getLabelDescription()
+      iconLegend.innerHTML = getIconLegend()
     }
 
     window.onload = setup
