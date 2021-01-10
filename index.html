@@ -131,8 +131,8 @@
       let intIp = ipToInt(ip)
       let split = splitSubnetAndMask(subnet)
 
-      let minIp = split.subnet & split.mask
-      let maxIp = split.subnet | ~split.mask
+      let minIp = Number(BigInt(split.subnet) & BigInt(split.mask))
+      let maxIp = Number(BigInt(split.subnet) | BigInt(~split.mask))
 
       return minIp <= intIp && intIp <= maxIp
     }
